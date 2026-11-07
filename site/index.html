@@ -1,0 +1,295 @@
+<!doctype html>
+<html lang="en" data-theme="light" data-season="winter">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>seasonal-fx — snow, blooms, sun glints and falling leaves for any website</title>
+<meta name="description" content="Zero-dependency seasonal canvas effects: falling snow for winter, butterflies and blooming flowers for spring, slow sun glints for summer and falling leaves for autumn. React, Next.js, Vue, Svelte, Astro and plain HTML.">
+<meta property="og:title" content="seasonal-fx">
+<meta property="og:description" content="Snow, blooms, sun glints and falling leaves for any website. Zero dependencies.">
+<meta property="og:image" content="https://raw.githubusercontent.com/berkayerdemsoy/seasonal-fx/main/assets/social-preview.png">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8D%82%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+    --radius: 14px;
+  }
+
+  /* Each season has a light and a dark surface so every effect can be judged on both. */
+  [data-season="winter"][data-theme="light"] { --bg: #eef3f9; --bg2: #dfe8f3; --fg: #15233a; --muted: #5a6b85; --card: #ffffffcc; --line: #c9d5e4; --accent: #3b6fb6; }
+  [data-season="winter"][data-theme="dark"]  { --bg: #0d1626; --bg2: #18294a; --fg: #e8f0ff; --muted: #93a6c6; --card: #13203acc; --line: #263a5c; --accent: #8fb6ff; }
+  [data-season="spring"][data-theme="light"] { --bg: #f5f8ec; --bg2: #e4edd3; --fg: #1f2f1b; --muted: #5d7155; --card: #ffffffcc; --line: #d3dfc0; --accent: #c2417f; }
+  [data-season="spring"][data-theme="dark"]  { --bg: #121a12; --bg2: #1c2a1b; --fg: #edf5e6; --muted: #9db394; --card: #182318cc; --line: #2b3c29; --accent: #f49ac6; }
+  [data-season="summer"][data-theme="light"] { --bg: #fff8ec; --bg2: #ffe7c2; --fg: #43300f; --muted: #866a40; --card: #ffffffcc; --line: #f0dcb8; --accent: #c77700; }
+  [data-season="summer"][data-theme="dark"]  { --bg: #1b150c; --bg2: #2c2111; --fg: #fbefd9; --muted: #c2a678; --card: #231b0fcc; --line: #3e3019; --accent: #ffc45a; }
+  [data-season="autumn"][data-theme="light"] { --bg: #faf3ea; --bg2: #efdcc4; --fg: #3a2113; --muted: #7d5a40; --card: #ffffffcc; --line: #e6d2ba; --accent: #c2410c; }
+  [data-season="autumn"][data-theme="dark"]  { --bg: #18110d; --bg2: #2a1b12; --fg: #f7ebdf; --muted: #c09a7c; --card: #20160fcc; --line: #3a271b; --accent: #f08a4b; }
+
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body {
+    margin: 0; min-height: 100vh; font: 400 16px/1.6 var(--sans); color: var(--fg);
+    background: radial-gradient(110% 70% at 15% 0%, var(--bg2) 0%, var(--bg) 60%) fixed, var(--bg);
+    transition: background-color .5s ease, color .5s ease;
+  }
+  a { color: inherit; }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  @media (max-width: 600px) { .wrap { padding: 0 16px; } }
+
+  header { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; }
+  .mark { font: 500 15px/1 var(--mono); letter-spacing: .02em; text-decoration: none; }
+  .nav { display: flex; gap: 18px; font-size: 14px; color: var(--muted); }
+  .nav a { text-decoration: none; } .nav a:hover { color: var(--fg); }
+
+  .hero { padding: 64px 0 40px; }
+  .eyebrow { font: 500 12px/1 var(--mono); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+  h1 { margin: 18px 0 0; font: 400 clamp(52px, 9vw, 104px)/.95 var(--serif); letter-spacing: -.02em; }
+  h1 em { font-style: italic; color: var(--accent); }
+  .lede { max-width: 620px; margin: 24px 0 0; font-size: 18px; color: var(--muted); }
+  .install { display: inline-flex; align-items: center; gap: 12px; margin-top: 28px; padding: 10px 10px 10px 18px; font: 500 14px/1 var(--mono); background: var(--fg); color: var(--bg); border-radius: 999px; }
+  .install button { font: 500 12px/1 var(--mono); padding: 8px 12px; border: 0; border-radius: 999px; background: color-mix(in srgb, var(--bg) 18%, transparent); color: inherit; cursor: pointer; }
+
+  .studio { display: grid; grid-template-columns: 320px 1fr; gap: 16px; margin: 32px 0 72px; }
+  @media (max-width: 820px) { .studio { grid-template-columns: 1fr; } }
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 20px; backdrop-filter: blur(8px); }
+  .panel h2 { margin: 0 0 14px; font: 500 12px/1 var(--mono); letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+  .field + .field { margin-top: 20px; }
+  .field > label, .field > span { display: flex; justify-content: space-between; font-size: 13px; color: var(--muted); margin-bottom: 8px; }
+  .field output { font-family: var(--mono); color: var(--fg); }
+
+  .seg { display: grid; grid-template-columns: repeat(var(--n, 5), 1fr); gap: 4px; padding: 4px; border: 1px solid var(--line); border-radius: 10px; }
+  .seg button { padding: 8px 4px; font: 500 13px/1 var(--sans); color: var(--muted); background: none; border: 0; border-radius: 7px; cursor: pointer; }
+  .seg button[aria-pressed="true"] { background: var(--fg); color: var(--bg); }
+  .seg button:focus-visible, .install button:focus-visible, .tabs button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  input[type="range"] { width: 100%; accent-color: var(--accent); }
+
+  .code { display: flex; flex-direction: column; min-width: 0; }
+  .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+  .tabs button { padding: 7px 12px; font: 500 12px/1 var(--mono); color: var(--muted); background: none; border: 1px solid transparent; border-radius: 8px; cursor: pointer; }
+  .tabs button[aria-selected="true"] { color: var(--fg); border-color: var(--line); }
+  .tabs .copy { margin-left: auto; }
+  pre { flex: 1; margin: 0; padding: 18px; overflow-x: auto; font: 400 13px/1.7 var(--mono); background: color-mix(in srgb, var(--fg) 6%, transparent); border-radius: 10px; }
+  .k { color: var(--accent); } .s { color: color-mix(in srgb, var(--fg) 75%, var(--accent)); } .c { color: var(--muted); }
+
+  .features { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--line); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; margin-bottom: 72px; }
+  @media (max-width: 820px) { .features { grid-template-columns: 1fr; } }
+  .features div { padding: 22px; background: var(--bg); }
+  .features h3 { margin: 0 0 6px; font: 400 26px/1.1 var(--serif); }
+  .features p { margin: 0; font-size: 14px; color: var(--muted); }
+
+  footer { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; padding: 28px 0 40px; border-top: 1px solid var(--line); font-size: 13px; color: var(--muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="mark" href="./">seasonal-fx</a>
+    <nav class="nav">
+      <a href="https://github.com/berkayerdemsoy/seasonal-fx#readme">Docs</a>
+      <a href="https://www.npmjs.com/package/seasonal-fx">npm</a>
+      <a href="https://github.com/berkayerdemsoy/seasonal-fx">GitHub</a>
+    </nav>
+  </header>
+
+  <section class="hero">
+    <div class="eyebrow">Zero dependencies · ~11 KB gzip</div>
+    <h1>Four seasons,<br><em>one line</em> of code.</h1>
+    <p class="lede">Snow in winter, butterflies and blooming flowers in spring, slow sun glints in summer, falling leaves in autumn. A click-through canvas for any website that can pick the season from today's date.</p>
+    <div class="install"><span>npm i seasonal-fx</span><button type="button" data-copy="npm i seasonal-fx">Copy</button></div>
+  </section>
+
+  <section class="studio" aria-label="Playground">
+    <div class="panel">
+      <h2>Playground</h2>
+      <div class="field">
+        <span>Season</span>
+        <div class="seg" id="season" role="group" aria-label="Season">
+          <button type="button" data-value="auto">Auto</button>
+          <button type="button" data-value="winter">Winter</button>
+          <button type="button" data-value="spring">Spring</button>
+          <button type="button" data-value="summer">Summer</button>
+          <button type="button" data-value="autumn">Autumn</button>
+        </div>
+      </div>
+      <div class="field">
+        <span>Hemisphere <output id="auto-note"></output></span>
+        <div class="seg" id="hemisphere" role="group" aria-label="Hemisphere" style="--n: 2">
+          <button type="button" data-value="north">North</button>
+          <button type="button" data-value="south">South</button>
+        </div>
+      </div>
+      <div class="field">
+        <span>Background</span>
+        <div class="seg" id="theme" role="group" aria-label="Background" style="--n: 2">
+          <button type="button" data-value="light">Light</button>
+          <button type="button" data-value="dark">Dark</button>
+        </div>
+      </div>
+      <div class="field">
+        <label for="density">Density <output id="density-out">1.0</output></label>
+        <input id="density" type="range" min="0.3" max="2.5" step="0.1" value="1">
+      </div>
+      <div class="field">
+        <label for="speed">Speed <output id="speed-out">1.0</output></label>
+        <input id="speed" type="range" min="0.3" max="2" step="0.1" value="1">
+      </div>
+    </div>
+
+    <div class="panel code">
+      <div class="tabs" role="tablist">
+        <button type="button" role="tab" data-tab="react" aria-selected="true">React / Next.js</button>
+        <button type="button" role="tab" data-tab="html" aria-selected="false">HTML</button>
+        <button type="button" role="tab" data-tab="js" aria-selected="false">JavaScript</button>
+        <button type="button" class="copy" id="copy-code">Copy</button>
+      </div>
+      <pre><code id="snippet"></code></pre>
+    </div>
+  </section>
+
+  <section class="features">
+    <div><h3>Click-through</h3><p>The canvas uses <code>pointer-events: none</code>, so links and buttons keep working.</p></div>
+    <div><h3>Calm by default</h3><p>Turns off for <code>prefers-reduced-motion</code> and pauses in background tabs.</p></div>
+    <div><h3>Knows the date</h3><p><code>season="auto"</code> follows meteorological seasons for either hemisphere.</p></div>
+    <div><h3>SSR-safe</h3><p>No <code>window</code> access during server rendering. Works in Next.js, Astro, Nuxt and SvelteKit.</p></div>
+    <div><h3>Fits phones</h3><p>Particle counts scale with the viewport; pixel ratio is capped for battery.</p></div>
+    <div><h3>Your palette</h3><p>Pass <code>colors</code> to tint snow, leaves, petals or glints to your brand.</p></div>
+  </section>
+
+  <footer>
+    <span>MIT licensed · by <a href="https://github.com/berkayerdemsoy">Berkay Erdemsoy</a></span>
+    <span>Respects your motion settings. If nothing moves, check reduced motion.</span>
+  </footer>
+</div>
+
+<script type="module">
+  const lib = new URLSearchParams(location.search).has('dev') ? '../dist/index.js' : './lib/index.js'
+  const { createSeasonalEffect, resolveSeason } = await import(lib)
+
+  const state = {
+    season: 'auto',
+    hemisphere: 'north',
+    theme: matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light',
+    density: 1,
+    speed: 1,
+    tab: 'react',
+  }
+  let fx
+
+  const root = document.documentElement
+  const $ = (s) => document.querySelector(s)
+
+  const esc = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;')
+  const fmt = (n) => Number(n).toFixed(1)
+
+  const props = () => {
+    const out = []
+    if (state.season !== 'auto') out.push(['season', state.season])
+    if (state.season === 'auto' && state.hemisphere === 'south') out.push(['hemisphere', 'south'])
+    if (state.density !== 1) out.push(['density', state.density])
+    if (state.speed !== 1) out.push(['speed', state.speed])
+    return out
+  }
+
+  const snippet = () => {
+    const p = props()
+    if (state.tab === 'react') {
+      const attrs = p.map(([k, v]) => typeof v === 'string' ? ` ${k}="${v}"` : ` ${k}={${v}}`).join('')
+      return `<span class="c">// app/layout.tsx</span>
+<span class="k">import</span> { SeasonalEffect } <span class="k">from</span> <span class="s">'seasonal-fx/react'</span>
+
+<span class="k">export default function</span> RootLayout({ children }) {
+  <span class="k">return</span> (
+    &lt;html&gt;
+      &lt;body&gt;
+        {children}
+        &lt;SeasonalEffect${esc(attrs)} /&gt;
+      &lt;/body&gt;
+    &lt;/html&gt;
+  )
+}`
+    }
+    if (state.tab === 'html') {
+      const attrs = p.map(([k, v]) => `\n        data-${k}="${v}"`).join('')
+      return `<span class="c">&lt;!-- before &lt;/body&gt; --&gt;</span>
+&lt;script type="module"
+        src=<span class="s">"https://cdn.jsdelivr.net/npm/seasonal-fx/dist/auto.js"</span>
+        data-seasonal-fx${attrs}&gt;&lt;/script&gt;`
+    }
+    const opts = p.length ? `{ ${p.map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`).join(', ')} }` : ''
+    return `<span class="k">import</span> { createSeasonalEffect } <span class="k">from</span> <span class="s">'seasonal-fx'</span>
+
+<span class="k">const</span> fx = createSeasonalEffect(${opts})
+
+<span class="c">// later: fx.setSeason('winter'), fx.pause(), fx.destroy()</span>`
+  }
+
+  const render = () => {
+    const shown = resolveSeason(state.season, state.hemisphere)
+    root.dataset.season = shown
+    root.dataset.theme = state.theme
+    for (const [id, value] of [['season', state.season], ['hemisphere', state.hemisphere], ['theme', state.theme]]) {
+      for (const b of document.querySelectorAll(`#${id} button`)) b.setAttribute('aria-pressed', String(b.dataset.value === value))
+    }
+    for (const b of document.querySelectorAll('[role="tab"]')) b.setAttribute('aria-selected', String(b.dataset.tab === state.tab))
+    $('#auto-note').textContent = state.season === 'auto' ? `today: ${shown}` : ''
+    $('#density-out').textContent = fmt(state.density)
+    $('#speed-out').textContent = fmt(state.speed)
+    $('#snippet').innerHTML = snippet()
+  }
+
+  // Density, speed and hemisphere change particle setup, so the effect is rebuilt; season cross-fades
+  const rebuild = () => {
+    fx?.destroy()
+    fx = createSeasonalEffect({ season: state.season, hemisphere: state.hemisphere, density: state.density, speed: state.speed })
+  }
+
+  const bindSeg = (id, key, onChange) => {
+    $(`#${id}`).addEventListener('click', (e) => {
+      const value = e.target.closest('button')?.dataset.value
+      if (!value || value === state[key]) return
+      state[key] = value
+      onChange?.()
+      render()
+    })
+  }
+
+  bindSeg('season', 'season', () => fx.setSeason(state.season))
+  bindSeg('hemisphere', 'hemisphere', rebuild)
+  bindSeg('theme', 'theme')
+
+  let slideTimer
+  for (const key of ['density', 'speed']) {
+    $(`#${key}`).addEventListener('input', (e) => {
+      state[key] = Number(e.target.value)
+      render()
+      clearTimeout(slideTimer)
+      slideTimer = setTimeout(rebuild, 150)
+    })
+  }
+
+  $('.tabs').addEventListener('click', (e) => {
+    const tab = e.target.closest('[role="tab"]')?.dataset.tab
+    if (tab) { state.tab = tab; render() }
+  })
+
+  const copy = async (text, button) => {
+    try {
+      await navigator.clipboard.writeText(text)
+      const label = button.textContent
+      button.textContent = 'Copied'
+      setTimeout(() => (button.textContent = label), 1200)
+    } catch { /* clipboard unavailable */ }
+  }
+  $('[data-copy]').addEventListener('click', (e) => copy(e.currentTarget.dataset.copy, e.currentTarget))
+  $('#copy-code').addEventListener('click', (e) => copy($('#snippet').textContent, e.currentTarget))
+
+  rebuild()
+  render()
+</script>
+</body>
+</html>

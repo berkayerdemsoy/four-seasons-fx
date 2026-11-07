@@ -1,0 +1,22 @@
+name: Scene or season idea
+description: Suggest a new scene (holiday, weather, theme) or a change to an existing one
+labels: [scene]
+body:
+  - type: input
+    id: name
+    attributes:
+      label: Name
+      placeholder: Halloween bats, Lunar New Year lanterns, rain
+    validations:
+      required: true
+  - type: textarea
+    id: look
+    attributes:
+      label: What should it look like?
+      description: Motion, shapes, colors, density. References or sketches are welcome.
+    validations:
+      required: true
+  - type: textarea
+    id: why
+    attributes:
+      label: Where would you use it?

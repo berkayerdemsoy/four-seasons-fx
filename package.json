@@ -1,0 +1,92 @@
+{
+  "name": "seasonal-fx",
+  "version": "0.1.0",
+  "description": "Zero-dependency seasonal canvas effects for websites: falling snow (winter), butterflies and blooming flowers (spring), slow sun glints (summer) and falling leaves (autumn / fall). Works with React, Next.js, Vue, Svelte, Astro and plain HTML.",
+  "license": "MIT",
+  "author": "Berkay Erdemsoy (https://github.com/berkayerdemsoy)",
+  "homepage": "https://github.com/berkayerdemsoy/seasonal-fx#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/berkayerdemsoy/seasonal-fx.git"
+  },
+  "bugs": {
+    "url": "https://github.com/berkayerdemsoy/seasonal-fx/issues"
+  },
+  "type": "module",
+  "main": "./dist/index.js",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./react": {
+      "types": "./dist/react.d.ts",
+      "import": "./dist/react.js"
+    },
+    "./auto": "./dist/auto.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "AGENTS.md",
+    "llms.txt"
+  ],
+  "sideEffects": [
+    "./dist/auto.js"
+  ],
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsc -p tsconfig.json --watch",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "build:site": "npm run build && node scripts/copy-site.mjs",
+    "serve": "node scripts/serve.mjs",
+    "capture": "npm run build && node scripts/capture.mjs && python3 scripts/encode.py",
+    "prepublishOnly": "npm run build"
+  },
+  "peerDependencies": {
+    "react": ">=17"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/react": "^19.3.0",
+    "puppeteer-core": "^25.16.0",
+    "react": "^19.3.1",
+    "typescript": "^7.0.2"
+  },
+  "keywords": [
+    "seasonal",
+    "seasons",
+    "snow",
+    "snowfall",
+    "snow-effect",
+    "falling-snow",
+    "christmas",
+    "winter",
+    "falling-leaves",
+    "leaves",
+    "autumn",
+    "fall",
+    "spring",
+    "butterflies",
+    "flowers",
+    "summer",
+    "sparkles",
+    "bokeh",
+    "particles",
+    "canvas",
+    "animation",
+    "background-effect",
+    "react",
+    "nextjs",
+    "vue",
+    "svelte",
+    "astro",
+    "zero-dependency"
+  ]
+}

@@ -1,0 +1,153 @@
+<!doctype html>
+<!--
+  Image template for README previews and the GitHub social card.
+  Query parameters:
+    layout  card | social          (default card)
+    season  winter | spring | summer | autumn   (card only)
+    w, h    size in CSS pixels     (default 640 x 320, social 1280 x 640)
+    capture present = no animation loop; scripts/capture.mjs steps time with window.__advance(dt)
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>seasonal-fx preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=block" rel="stylesheet">
+<style>
+  :root {
+    --serif: 'Instrument Serif', Georgia, serif;
+    --sans: 'Inter', system-ui, sans-serif;
+    --mono: 'Geist Mono', ui-monospace, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: var(--w); height: var(--h); overflow: hidden; background: #111; }
+
+  .panel { position: absolute; overflow: hidden; }
+  .panel canvas { position: absolute; inset: 0; width: 100%; height: 100%; }
+
+  [data-season="winter"] { background: radial-gradient(120% 90% at 20% 0%, #253b5e 0%, #13213a 55%, #0b1424 100%); color: #e9f1ff; --muted: #9fb3d4; }
+  [data-season="spring"] { background: radial-gradient(120% 90% at 80% 0%, #f8faef 0%, #edf3df 55%, #e1ead0 100%); color: #22321d; --muted: #5f7356; }
+  [data-season="summer"] { background: radial-gradient(120% 90% at 10% 0%, #fffaf0 0%, #ffefd2 55%, #ffe2b4 100%); color: #4a3112; --muted: #8a6a3e; }
+  [data-season="autumn"] { background: radial-gradient(120% 90% at 70% 0%, #faf3ea 0%, #f2e2cf 55%, #e8d2b8 100%); color: #3b2213; --muted: #7d5a40; }
+
+  /* card */
+  .card { inset: 0; }
+  .card .label { position: absolute; left: 7%; bottom: 13%; z-index: 1; }
+  .card .brand { position: absolute; left: 7%; top: 11%; z-index: 1; font: 500 calc(var(--h) * 0.044)/1 var(--mono); color: var(--muted); letter-spacing: 0.02em; }
+  .card h1 { font: 400 calc(var(--h) * 0.3)/0.9 var(--serif); letter-spacing: -0.01em; }
+  .card p { margin-top: calc(var(--h) * 0.035); font: 400 calc(var(--h) * 0.05)/1.3 var(--mono); color: var(--muted); }
+  .card .fx { z-index: 2; }
+
+  /* social */
+  .social .panel { top: 0; bottom: 0; width: 25%; }
+  .social .panel:nth-child(1) { left: 0; }
+  .social .panel:nth-child(2) { left: 25%; }
+  .social .panel:nth-child(3) { left: 50%; }
+  .social .panel:nth-child(4) { left: 75%; }
+  .social .tag { position: absolute; left: 50%; bottom: 7%; transform: translateX(-50%); font: 500 calc(var(--h) * 0.026)/1 var(--mono); color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; z-index: 3; }
+  .plate {
+    position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); z-index: 4;
+    padding: calc(var(--h) * 0.06) calc(var(--h) * 0.1);
+    background: #fffcf6; color: #1d1a16; border-radius: calc(var(--h) * 0.03);
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.35), 0 0 0 1px rgba(0, 0, 0, 0.06);
+    text-align: center; white-space: nowrap;
+  }
+  .plate h1 { font: 400 calc(var(--h) * 0.17)/1 var(--serif); letter-spacing: -0.015em; }
+  .plate p { margin-top: calc(var(--h) * 0.03); font: 400 calc(var(--h) * 0.034)/1.4 var(--sans); color: #5b544b; }
+  .plate code { display: inline-block; margin-top: calc(var(--h) * 0.035); padding: 0.45em 0.9em; font: 500 calc(var(--h) * 0.028)/1 var(--mono); background: #1d1a16; color: #f6efe4; border-radius: 999px; }
+</style>
+</head>
+<body>
+<script type="module">
+  import { createScene, SEASONS } from '../../dist/index.js'
+
+  const q = new URLSearchParams(location.search)
+  const layout = q.get('layout') === 'social' ? 'social' : 'card'
+  const W = Number(q.get('w') ?? (layout === 'social' ? 1280 : 640))
+  const H = Number(q.get('h') ?? (layout === 'social' ? 640 : 320))
+  document.documentElement.style.setProperty('--w', `${W}px`)
+  document.documentElement.style.setProperty('--h', `${H}px`)
+
+  const COPY = {
+    winter: ['Winter', "season: 'winter'  ·  falling snow"],
+    spring: ['Spring', "season: 'spring'  ·  butterflies, blooms"],
+    summer: ['Summer', "season: 'summer'  ·  slow sun glints"],
+    autumn: ['Autumn', "season: 'autumn'  ·  falling leaves"],
+  }
+
+  const dpr = window.devicePixelRatio || 1
+  const views = []
+
+  const addView = (parent, season, w, h, density) => {
+    const canvas = document.createElement('canvas')
+    canvas.className = 'fx'
+    canvas.width = Math.round(w * dpr)
+    canvas.height = Math.round(h * dpr)
+    parent.appendChild(canvas)
+    const ctx = canvas.getContext('2d')
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0)
+    const scene = createScene(season, { density })
+    scene.resize(w, h)
+    views.push({ ctx, scene, w, h })
+  }
+
+  if (layout === 'card') {
+    const season = SEASONS.includes(q.get('season')) ? q.get('season') : 'winter'
+    const el = document.createElement('section')
+    el.className = 'panel card'
+    el.dataset.season = season
+    el.innerHTML = `<div class="brand">seasonal-fx</div><div class="label"><h1>${COPY[season][0]}</h1><p>${COPY[season][1]}</p></div>`
+    document.body.appendChild(el)
+    addView(el, season, W, H, Number(q.get('density') ?? 1.6))
+  } else {
+    const root = document.createElement('main')
+    root.className = 'social'
+    root.style.cssText = 'position:absolute;inset:0'
+    for (const season of SEASONS) {
+      const el = document.createElement('section')
+      el.className = 'panel'
+      el.dataset.season = season
+      root.appendChild(el)
+      addView(el, season, W / 4, H, Number(q.get('density') ?? 2.2))
+    }
+    root.insertAdjacentHTML('beforeend', `
+      <div class="plate">
+        <h1>seasonal-fx</h1>
+        <p>Snow, blooms, sun glints and falling leaves for any website.</p>
+        <code>npm i seasonal-fx</code>
+      </div>`)
+    document.body.appendChild(root)
+  }
+
+  let time = 0
+  window.__advance = (dt) => {
+    time += dt
+    for (const v of views) {
+      v.scene.update(dt, time)
+      v.ctx.clearRect(0, 0, v.w, v.h)
+      v.scene.draw(v.ctx, time)
+    }
+  }
+  /** Runs the simulation forward so particles are spread out and flowers have bloomed. */
+  window.__warm = (seconds, step = 1 / 30) => {
+    for (let t = 0; t < seconds; t += step) window.__advance(step)
+  }
+
+  await document.fonts.ready
+  window.__ready = true
+
+  if (!q.has('capture')) {
+    window.__warm(6)
+    let last = performance.now()
+    const loop = (now) => {
+      window.__advance(Math.min((now - last) / 1000, 0.05))
+      last = now
+      requestAnimationFrame(loop)
+    }
+    requestAnimationFrame(loop)
+  }
+</script>
+</body>
+</html>

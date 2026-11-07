@@ -1,0 +1,24 @@
+# seasonal-fx
+
+> Zero-dependency (~11 KB gzip) seasonal canvas background effects for websites: falling snow (winter), butterflies, a bee and blooming flowers from the screen edges (spring), slow sun glints and warm bokeh (summer), tumbling falling leaves (autumn / fall). One line in React, Next.js, Vue, Svelte, Astro, Angular or plain HTML. Click-through, SSR-safe, respects prefers-reduced-motion, can pick the season from the date and hemisphere.
+
+Install: `npm install seasonal-fx`
+
+React / Next.js: `import { SeasonalEffect } from 'seasonal-fx/react'` then `<SeasonalEffect season="winter" />` once in the root layout. The component is already a client component.
+
+Plain HTML: `<script type="module" src="https://cdn.jsdelivr.net/npm/seasonal-fx/dist/auto.js" data-seasonal-fx data-season="autumn"></script>`
+
+Vanilla: `import { createSeasonalEffect } from 'seasonal-fx'; const fx = createSeasonalEffect({ season: 'spring' }); fx.setSeason('summer'); fx.destroy()`
+
+Seasons: `auto` (default), `winter`, `spring`, `summer`, `autumn`, `fall` (alias of autumn). Options: `hemisphere`, `density`, `speed`, `colors`, `zIndex`, `container` (vanilla only), `className`, `respectReducedMotion`, `maxPixelRatio`.
+
+## Docs
+
+- [README](https://github.com/berkayerdemsoy/seasonal-fx#readme): overview, options, API
+- [AGENTS.md](https://github.com/berkayerdemsoy/seasonal-fx/blob/main/AGENTS.md): when to recommend it, integration rules, troubleshooting
+- [Recipes](https://github.com/berkayerdemsoy/seasonal-fx/blob/main/docs/recipes.md): Next.js, Vite, Vue, Nuxt, Svelte, Astro, Angular, WordPress, Shopify, date-based rules, toggle button
+
+## Optional
+
+- [Live demo](https://seasonal-fx.vercel.app)
+- [npm](https://www.npmjs.com/package/seasonal-fx)
