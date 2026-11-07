@@ -11,7 +11,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>seasonal-fx preview</title>
+<title>four-seasons-fx preview</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&family=Inter:wght@400;500&display=block" rel="stylesheet">
@@ -98,7 +98,7 @@
     const el = document.createElement('section')
     el.className = 'panel card'
     el.dataset.season = season
-    el.innerHTML = `<div class="brand">seasonal-fx</div><div class="label"><h1>${COPY[season][0]}</h1><p>${COPY[season][1]}</p></div>`
+    el.innerHTML = `<div class="brand">four-seasons-fx</div><div class="label"><h1>${COPY[season][0]}</h1><p>${COPY[season][1]}</p></div>`
     document.body.appendChild(el)
     addView(el, season, W, H, Number(q.get('density') ?? 1.6))
   } else {
@@ -114,9 +114,9 @@
     }
     root.insertAdjacentHTML('beforeend', `
       <div class="plate">
-        <h1>seasonal-fx</h1>
+        <h1>four-seasons-fx</h1>
         <p>Snow, blooms, sun glints and falling leaves for any website.</p>
-        <code>npm i seasonal-fx</code>
+        <code>npm i four-seasons-fx</code>
       </div>`)
     document.body.appendChild(root)
   }

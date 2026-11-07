@@ -1,16 +1,16 @@
 {
-  "name": "seasonal-fx",
+  "name": "four-seasons-fx",
   "version": "0.1.0",
   "description": "Zero-dependency seasonal canvas effects for websites: falling snow (winter), butterflies and blooming flowers (spring), slow sun glints (summer) and falling leaves (autumn / fall). Works with React, Next.js, Vue, Svelte, Astro and plain HTML.",
   "license": "MIT",
   "author": "Berkay Erdemsoy (https://github.com/berkayerdemsoy)",
-  "homepage": "https://github.com/berkayerdemsoy/seasonal-fx#readme",
+  "homepage": "https://github.com/berkayerdemsoy/four-seasons-fx#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/berkayerdemsoy/seasonal-fx.git"
+    "url": "git+https://github.com/berkayerdemsoy/four-seasons-fx.git"
   },
   "bugs": {
-    "url": "https://github.com/berkayerdemsoy/seasonal-fx/issues"
+    "url": "https://github.com/berkayerdemsoy/four-seasons-fx/issues"
   },
   "type": "module",
   "main": "./dist/index.js",

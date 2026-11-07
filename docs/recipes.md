@@ -1,6 +1,6 @@
 # Recipes
 
-Copy-paste setups for `seasonal-fx`. Every snippet mounts the effect once and cleans up on unmount.
+Copy-paste setups for `four-seasons-fx`. Every snippet mounts the effect once and cleans up on unmount.
 
 - [Next.js App Router](#nextjs-app-router)
 - [Next.js Pages Router](#nextjs-pages-router)
@@ -19,7 +19,7 @@ Copy-paste setups for `seasonal-fx`. Every snippet mounts the effect once and cl
 
 ```tsx
 // app/layout.tsx
-import { SeasonalEffect } from 'seasonal-fx/react'
+import { SeasonalEffect } from 'four-seasons-fx/react'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -33,14 +33,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 }
 ```
 
-`seasonal-fx/react` ships with `'use client'`. No `dynamic(() => ..., { ssr: false })` is needed.
+`four-seasons-fx/react` ships with `'use client'`. No `dynamic(() => ..., { ssr: false })` is needed.
 
 ## Next.js Pages Router
 
 ```tsx
 // pages/_app.tsx
 import type { AppProps } from 'next/app'
-import { SeasonalEffect } from 'seasonal-fx/react'
+import { SeasonalEffect } from 'four-seasons-fx/react'
 
 export default function App({ Component, pageProps }: AppProps) {
   return (
@@ -56,7 +56,7 @@ export default function App({ Component, pageProps }: AppProps) {
 
 ```tsx
 // src/App.tsx
-import { SeasonalEffect } from 'seasonal-fx/react'
+import { SeasonalEffect } from 'four-seasons-fx/react'
 
 export default function App() {
   return (
@@ -74,7 +74,7 @@ export default function App() {
 <!-- App.vue -->
 <script setup lang="ts">
 import { onMounted, onBeforeUnmount } from 'vue'
-import { createSeasonalEffect, type SeasonalController } from 'seasonal-fx'
+import { createSeasonalEffect, type SeasonalController } from 'four-seasons-fx'
 
 let fx: SeasonalController | undefined
 onMounted(() => { fx = createSeasonalEffect({ season: 'auto' }) })
@@ -85,8 +85,8 @@ onBeforeUnmount(() => fx?.destroy())
 ## Nuxt 3
 
 ```ts
-// plugins/seasonal-fx.client.ts
-import { createSeasonalEffect } from 'seasonal-fx'
+// plugins/four-seasons-fx.client.ts
+import { createSeasonalEffect } from 'four-seasons-fx'
 
 export default defineNuxtPlugin(() => {
   createSeasonalEffect()
@@ -101,7 +101,7 @@ The `.client.ts` suffix runs it in the browser only.
 <!-- src/routes/+layout.svelte -->
 <script lang="ts">
   import { onMount } from 'svelte'
-  import { createSeasonalEffect } from 'seasonal-fx'
+  import { createSeasonalEffect } from 'four-seasons-fx'
 
   let { children } = $props()
 
@@ -124,7 +124,7 @@ The `.client.ts` suffix runs it in the browser only.
   <body>
     <slot />
     <script>
-      import { createSeasonalEffect } from 'seasonal-fx'
+      import { createSeasonalEffect } from 'four-seasons-fx'
       createSeasonalEffect()
     </script>
   </body>
@@ -134,8 +134,8 @@ The `.client.ts` suffix runs it in the browser only.
 With View Transitions, guard against double mounting:
 
 ```ts
-import { createSeasonalEffect } from 'seasonal-fx'
-if (!document.querySelector('canvas[data-seasonal-fx]')) createSeasonalEffect()
+import { createSeasonalEffect } from 'four-seasons-fx'
+if (!document.querySelector('canvas[data-four-seasons-fx]')) createSeasonalEffect()
 ```
 
 ## Angular
@@ -143,7 +143,7 @@ if (!document.querySelector('canvas[data-seasonal-fx]')) createSeasonalEffect()
 ```ts
 // app.component.ts
 import { AfterViewInit, Component, OnDestroy } from '@angular/core'
-import { createSeasonalEffect, type SeasonalController } from 'seasonal-fx'
+import { createSeasonalEffect, type SeasonalController } from 'four-seasons-fx'
 
 @Component({ selector: 'app-root', standalone: true, template: '<router-outlet />' })
 export class AppComponent implements AfterViewInit, OnDestroy {
@@ -162,20 +162,20 @@ Shopify: `theme.liquid`; Webflow: Site settings → Custom code → Footer):
 
 ```html
 <script type="module"
-        src="https://cdn.jsdelivr.net/npm/seasonal-fx/dist/auto.js"
-        data-seasonal-fx
+        src="https://cdn.jsdelivr.net/npm/four-seasons-fx/dist/auto.js"
+        data-four-seasons-fx
         data-season="auto"
         data-density="1"></script>
 ```
 
-Pin a version in production: `https://cdn.jsdelivr.net/npm/seasonal-fx@0.1/dist/auto.js`.
+Pin a version in production: `https://cdn.jsdelivr.net/npm/four-seasons-fx@0.1/dist/auto.js`.
 
 ## Only on certain dates
 
 Snow only in December, leaves in autumn, nothing otherwise:
 
 ```tsx
-import { SeasonalEffect, getSeason } from 'seasonal-fx/react'
+import { SeasonalEffect, getSeason } from 'four-seasons-fx/react'
 
 export function Decorations() {
   const now = new Date()
@@ -190,7 +190,7 @@ During SSR the server date is used for the first render; that is fine for month-
 ## Only inside a hero section
 
 ```ts
-import { createSeasonalEffect } from 'seasonal-fx'
+import { createSeasonalEffect } from 'four-seasons-fx'
 
 const hero = document.querySelector<HTMLElement>('#hero')!
 const fx = createSeasonalEffect({ season: 'spring', container: hero, zIndex: 0 })
@@ -213,19 +213,19 @@ Put the hero content above it with `position: relative; z-index: 1`.
 ```tsx
 'use client'
 import { useEffect, useState } from 'react'
-import { SeasonalEffect } from 'seasonal-fx/react'
+import { SeasonalEffect } from 'four-seasons-fx/react'
 
 export function SeasonalToggle() {
   const [on, setOn] = useState(true)
 
   useEffect(() => {
-    try { setOn(localStorage.getItem('seasonal-fx') !== 'off') } catch {}
+    try { setOn(localStorage.getItem('four-seasons-fx') !== 'off') } catch {}
   }, [])
 
   const toggle = () => {
     const next = !on
     setOn(next)
-    try { localStorage.setItem('seasonal-fx', next ? 'on' : 'off') } catch {}
+    try { localStorage.setItem('four-seasons-fx', next ? 'on' : 'off') } catch {}
   }
 
   return (

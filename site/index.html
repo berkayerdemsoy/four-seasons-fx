@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>seasonal-fx — snow, blooms, sun glints and falling leaves for any website</title>
+<title>four-seasons-fx — snow, blooms, sun glints and falling leaves for any website</title>
 <meta name="description" content="Zero-dependency seasonal canvas effects: falling snow for winter, butterflies and blooming flowers for spring, slow sun glints for summer and falling leaves for autumn. React, Next.js, Vue, Svelte, Astro and plain HTML.">
-<meta property="og:title" content="seasonal-fx">
+<meta property="og:title" content="four-seasons-fx">
 <meta property="og:description" content="Snow, blooms, sun glints and falling leaves for any website. Zero dependencies.">
-<meta property="og:image" content="https://raw.githubusercontent.com/berkayerdemsoy/seasonal-fx/main/assets/social-preview.png">
+<meta property="og:image" content="https://raw.githubusercontent.com/berkayerdemsoy/four-seasons-fx/main/assets/social-preview.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%8D%82%3C/text%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -88,11 +88,11 @@
 <body>
 <div class="wrap">
   <header>
-    <a class="mark" href="./">seasonal-fx</a>
+    <a class="mark" href="./">four-seasons-fx</a>
     <nav class="nav">
-      <a href="https://github.com/berkayerdemsoy/seasonal-fx#readme">Docs</a>
-      <a href="https://www.npmjs.com/package/seasonal-fx">npm</a>
-      <a href="https://github.com/berkayerdemsoy/seasonal-fx">GitHub</a>
+      <a href="https://github.com/berkayerdemsoy/four-seasons-fx#readme">Docs</a>
+      <a href="https://www.npmjs.com/package/four-seasons-fx">npm</a>
+      <a href="https://github.com/berkayerdemsoy/four-seasons-fx">GitHub</a>
     </nav>
   </header>
 
@@ -100,7 +100,7 @@
     <div class="eyebrow">Zero dependencies · ~11 KB gzip</div>
     <h1>Four seasons,<br><em>one line</em> of code.</h1>
     <p class="lede">Snow in winter, butterflies and blooming flowers in spring, slow sun glints in summer, falling leaves in autumn. A click-through canvas for any website that can pick the season from today's date.</p>
-    <div class="install"><span>npm i seasonal-fx</span><button type="button" data-copy="npm i seasonal-fx">Copy</button></div>
+    <div class="install"><span>npm i four-seasons-fx</span><button type="button" data-copy="npm i four-seasons-fx">Copy</button></div>
   </section>
 
   <section class="studio" aria-label="Playground">
@@ -200,7 +200,7 @@
     if (state.tab === 'react') {
       const attrs = p.map(([k, v]) => typeof v === 'string' ? ` ${k}="${v}"` : ` ${k}={${v}}`).join('')
       return `<span class="c">// app/layout.tsx</span>
-<span class="k">import</span> { SeasonalEffect } <span class="k">from</span> <span class="s">'seasonal-fx/react'</span>
+<span class="k">import</span> { SeasonalEffect } <span class="k">from</span> <span class="s">'four-seasons-fx/react'</span>
 
 <span class="k">export default function</span> RootLayout({ children }) {
   <span class="k">return</span> (
@@ -217,11 +217,11 @@
       const attrs = p.map(([k, v]) => `\n        data-${k}="${v}"`).join('')
       return `<span class="c">&lt;!-- before &lt;/body&gt; --&gt;</span>
 &lt;script type="module"
-        src=<span class="s">"https://cdn.jsdelivr.net/npm/seasonal-fx/dist/auto.js"</span>
-        data-seasonal-fx${attrs}&gt;&lt;/script&gt;`
+        src=<span class="s">"https://cdn.jsdelivr.net/npm/four-seasons-fx/dist/auto.js"</span>
+        data-four-seasons-fx${attrs}&gt;&lt;/script&gt;`
     }
     const opts = p.length ? `{ ${p.map(([k, v]) => `${k}: ${typeof v === 'string' ? `'${v}'` : v}`).join(', ')} }` : ''
-    return `<span class="k">import</span> { createSeasonalEffect } <span class="k">from</span> <span class="s">'seasonal-fx'</span>
+    return `<span class="k">import</span> { createSeasonalEffect } <span class="k">from</span> <span class="s">'four-seasons-fx'</span>
 
 <span class="k">const</span> fx = createSeasonalEffect(${opts})
 

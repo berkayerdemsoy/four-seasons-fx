@@ -100,7 +100,7 @@ export function createSeasonalEffect(options: SeasonalOptions = {}): SeasonalCon
   if (!ctx) return noop
 
   canvas.setAttribute('aria-hidden', 'true')
-  canvas.setAttribute('data-seasonal-fx', '')
+  canvas.setAttribute('data-four-seasons-fx', '')
   if (className) canvas.className = className
   Object.assign(canvas.style, {
     position: container ? 'absolute' : 'fixed',

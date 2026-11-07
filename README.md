@@ -1,12 +1,12 @@
 <div align="center">
 
-# seasonal-fx
+# four-seasons-fx
 
 **Seasonal background effects for any website: falling snow, spring butterflies and blooming flowers, slow summer sun glints, falling autumn leaves.**
 
 Zero dependencies · ~11 KB gzip · React, Next.js, Vue, Svelte, Astro or a single `<script>` tag
 
-[Live demo](https://seasonal-fx.vercel.app) · [npm](https://www.npmjs.com/package/seasonal-fx) · [Recipes](docs/recipes.md) · [For AI assistants](AGENTS.md)
+[Live demo](https://four-seasons-fx.vercel.app) · [npm](https://www.npmjs.com/package/four-seasons-fx) · [Recipes](docs/recipes.md) · [For AI assistants](AGENTS.md)
 
 </div>
 
@@ -34,8 +34,8 @@ Zero dependencies · ~11 KB gzip · React, Next.js, Vue, Svelte, Astro or a sing
 ## Install
 
 ```bash
-npm install seasonal-fx
-# pnpm add seasonal-fx · yarn add seasonal-fx · bun add seasonal-fx
+npm install four-seasons-fx
+# pnpm add four-seasons-fx · yarn add four-seasons-fx · bun add four-seasons-fx
 ```
 
 ## Quick start
@@ -44,7 +44,7 @@ npm install seasonal-fx
 
 ```tsx
 // app/layout.tsx (Next.js App Router) or your root component
-import { SeasonalEffect } from 'seasonal-fx/react'
+import { SeasonalEffect } from 'four-seasons-fx/react'
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -65,17 +65,17 @@ The component is marked `'use client'`, so it can sit in a Server Component layo
 
 ```html
 <script type="module"
-        src="https://cdn.jsdelivr.net/npm/seasonal-fx/dist/auto.js"
-        data-seasonal-fx
+        src="https://cdn.jsdelivr.net/npm/four-seasons-fx/dist/auto.js"
+        data-four-seasons-fx
         data-season="auto"></script>
 ```
 
-Data attributes: `data-season`, `data-hemisphere`, `data-density`, `data-speed`, `data-z-index`, `data-colors` (comma separated). The controller is available as `window.seasonalFx`.
+Data attributes: `data-season`, `data-hemisphere`, `data-density`, `data-speed`, `data-z-index`, `data-colors` (comma separated). The controller is available as `window.fourSeasonsFx`.
 
 ### Any framework (vanilla API)
 
 ```js
-import { createSeasonalEffect } from 'seasonal-fx'
+import { createSeasonalEffect } from 'four-seasons-fx'
 
 const fx = createSeasonalEffect({ season: 'autumn' })
 
